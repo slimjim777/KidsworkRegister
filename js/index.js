@@ -16,6 +16,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+ 
+var user_credentials;
+var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
+ 
 var app = {
     // Application Constructor
     initialize: function() {
@@ -26,24 +30,97 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+        //document.addEventListener('deviceready', this.onDeviceReady, false);
     },
     // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
-        app.receivedEvent('deviceready');
     },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
-
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
-
-        console.log('Received Event: ' + id);
-    }
 };
+
+// Check if the user is authorized, or redirect to login page
+function authorization()
+{
+    console.log(user_credentials);
+    if (!user_credentials)
+    {
+        // Redirect to login page
+        $.mobile.changePage( "#login"); //, { transition: "pop"} );
+    }
+    else
+    {
+        return user_credentials;
+    }
+}
+
+
+function login()
+{
+    var username = $('#username').val();
+    var password = $('#password').val();
+    BASE_URL = $('#url').val(); // Set global variable
+    
+    // Re-initialise... just in case the page has been cached
+    //init();
+    
+    var login_data = {
+        "username": username,
+        "password": password,
+    };
+    
+    var request = $.ajax({
+        type: "POST",
+        url: BASE_URL + "login",
+        contentType:"application/json",
+        dataType: "json",
+        data: JSON.stringify(login_data),
+        success: function() {
+            user_credentials = username;
+            eventsPage();
+            $.mobile.changePage( "#events");
+        },
+        error: function(error) {
+            console.log("---failure");
+            console.log(error);
+    	    $("#loginmessage").text("Login failed. Please check the credentials.");
+    	    $.mobile.changePage( "#login");
+        }
+    });
+    
+}
+    
+function eventsPage(event, data)
+{
+    //if (!authorization()) return;
+    
+    var items = ['<li data-role="list-divider">Events</li>'];
+
+    var request = $.ajax({
+        type: "GET",
+        url: BASE_URL + "events",
+        contentType:"application/json",
+        dataType: "json",
+        data: null,
+        success: function(data) {
+            console.log(data);
+            for (ev in data.result)
+            {
+                var e = data.result[ev];
+                items.push('<li id="event' + e.event_id + '"><a href="#inout" onclick="inoutPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
+            }
+            $('#e-list li').remove();
+            $('#e-list').append(items.join('\n'));
+            $("#e-list").listview("refresh");        
+        },
+        error: function(error) {
+            console.log("---events", error);
+        }
+    });
+
+}
+
+function inoutPage(event_id, event_name)
+{
+    var items = [];
+    $('#d-event').text(event_name);
+    console.log("Choose sign-in/out Page");
+}
