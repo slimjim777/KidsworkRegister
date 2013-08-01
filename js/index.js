@@ -66,6 +66,12 @@ $.when(jqmReady, pgReady).then(function() {
    if(app.callback) {
       app.callback();
    }
+   
+   // FastClick handler
+   window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    
    console.log("Frameworks ready.");
 });
 

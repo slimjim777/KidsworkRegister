@@ -2,7 +2,7 @@
 <widget id="eu.lifechurch.kidsworkregister" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:gap="http://phonegap.com/ns/1.0">
     <name>KidsworkRegister</name>
     <description>
-        Hello World sample application that responds to the deviceready event.
+        Registering Attends to Kidswork Events.
     </description>
     <author email="support@lifechurch.com" href="http://lifechurch.eu">
         James Jesudason
