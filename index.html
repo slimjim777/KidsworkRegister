@@ -43,22 +43,6 @@ $( document ).bind( "mobileinit", function() {
     </head>
     <body>
 
-    <!-- Actions -->
-    <div data-role="page" data-title="Kidswork Register" id="actions">
-        <div data-role="header" data-theme="b">
-            <h1>Kidswork Register</h1>
-        </div>
-        <div data-role="content">
-            <div data-role="navbar" data-iconpos="top">
-                <ul>
-                    <li><a href="#" data-icon="plus" onclick="showEventsPage('Sign-In')">Sign-In</a></li>
-                    <li><a href="#" data-icon="minus" onclick="showEventsPage('Sign-Out')">Sign-Out</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-
     <!-- Events -->
     <div data-role="page" data-title="Register" id="events">
         <script type="text/javascript">
@@ -67,7 +51,7 @@ $( document ).bind( "mobileinit", function() {
         });
         </script>
         <div data-role="header" data-theme="b">
-            <a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Actions</a>
+            <!--a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Actions</a-->
             <h1>Kidswork Register</h1>
             <h3 id="e-action"></h3>
         </div>
@@ -77,6 +61,28 @@ $( document ).bind( "mobileinit", function() {
             </ul>
         </div>
     </div>
+    
+    
+    <!-- Actions -->
+    <div data-role="page" data-title="Kidswork Register" id="actions">
+        <div data-role="header" data-theme="b">
+            <a href="#events" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Events</a>
+            <h1>Kidswork Register</h1>
+            <h3 id="a-event"></h3>
+        </div>
+        <div data-role="content">
+        </div>
+        
+        <div data-role="footer" data-theme="c" data-position="fixed">
+            <div data-role="navbar" data-iconpos="top">
+                <ul>
+                    <li><a href="#" data-icon="plus" onclick="registerPage('Sign-In')">Sign-In</a></li>
+                    <li><a href="#" data-icon="minus" onclick="registerPage('Sign-Out')">Sign-Out</a></li>
+                </ul>
+            </div>
+        </div>    
+    </div>
+
 
     
     <!-- Login -->
@@ -112,11 +118,12 @@ $( document ).bind( "mobileinit", function() {
 <!-- Register -->
 <div data-role="page" data-title="Register" id="register">
     <div data-role="header" data-theme="b" data-position="fixed">
-        <a href="#events" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Events</a>
+        <a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Summary</a>
         <h1 id="r-heading">Kidswork Register</h1>
         <h3 id="r-event"></h3>
     </div>
     
+    <h2 id="r-action"></h2>
     <div data-role="content">
 
         <ul data-inset="true" data-role="listview" data-divider-theme="a">
@@ -129,9 +136,12 @@ $( document ).bind( "mobileinit", function() {
                 
                 <div class="ui-grid-a">
                     <div class="ui-block-a">
-                        <input type="search" name="family_id" id="family_id" value="" placeholder="Scan or Enter Number" onkeyup="parentManual(event)"/>
-                        <br/>
                         <h3 id="r-family"><h3>
+
+                        <input type="search" name="family_id" id="family_id" value="" placeholder="Scan or Enter Number" onkeyup="parentManual(event)"/>
+                        <br/>                    
+                        <ul id="r-list" data-role="listview" data-inset="true" data-dividertheme="a">
+                        </ul>            
                     </div>
                     <div class="ui-block-b" data-theme="a"  style="padding-10px; text-align: center;">
                         <img id="r-status" src="img/frame.png" style=""/>
@@ -140,15 +150,16 @@ $( document ).bind( "mobileinit", function() {
                 
             </li>
         </ul>        
-        <ul id="r-list" data-role="listview" data-inset="true" data-dividertheme="a">
-            <li id="r-kids">Children</li>
+
+        <ul id="r-list-in" data-role="listview" data-inset="true" data-dividertheme="b">
+            <li id="r-kids-in" data-role="list-divider">To Sign-In</li>
         </ul>
           
     </div>
     
     <div data-role="footer" data-theme="c" data-position="fixed">
         <div data-role="controlgroup">
-            <a href="#" data-icon="gear" data-role="button" data-theme="c">Register</a></li>
+            <a href="#" data-iconpos="top" data-icon="gear" data-role="button" data-theme="c">Register</a></li>
         </div>
     </div>
     </div>

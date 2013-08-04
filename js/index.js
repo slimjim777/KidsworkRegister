@@ -19,7 +19,7 @@
  
 var user_credentials;
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
-var eventId, familyId, action;
+var eventId, familyId, action, eventName, children, signedin, signedout;
 
 var FAMILYIN = "img/frame_in.png";
 var FAMILYOUT = "img/frame_out.png";
@@ -82,25 +82,6 @@ $.when(jqmReady, pgReady).then(function() {
 });
 
 
-/*
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        //document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    onDeviceReady: function() {
-    },
-};
-*/
-
 // Check if the user is authorized, or redirect to login page
 function authorization()
 {
@@ -141,7 +122,6 @@ function login()
             $.mobile.changePage("#actions");
         },
         error: function(error) {
-            console.log("---failure");
             console.log(error);
     	    $("#loginmessage").text("Login failed. Please check the credentials.");
     	    $.mobile.changePage( "#login");
@@ -173,7 +153,8 @@ function eventsPage(event, data)
             for (ev in data.result)
             {
                 var e = data.result[ev];
-                items.push('<li id="event' + e.event_id + '"><a href="#register" onclick="registerPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
+                items.push('<li id="event' + e.event_id + '"><a href="#actions" onclick="actionsPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
+                //items.push('<li id="event' + e.event_id + '"><a href="#register" onclick="registerPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
             }
             $('#e-list li').remove();
             $('#e-list').append(items.join('\n'));
@@ -186,28 +167,40 @@ function eventsPage(event, data)
 
 }
 
-function registerPage(event_id, event_name)
-{
+function actionsPage(event_id, event_name) {
     eventId = event_id;
+    eventName = event_name;
+    
     var items = [];
-    $('#r-event').text(event_name);
+    $('#a-event').text(event_name);
+        
+    $.mobile.changePage("#actions");
+
+}
+
+function registerPage(action)
+{
+    var items = [];
+    $('#r-event').text(eventName);
+    $('#r-action').text(action);
     
     // Reset the view
     familyId = null;
+    children = [];
+    signedin = [];
+    signedout = []
     $('#r-list').hide();
     $('#family_id').val("");
     $('#r-family').text("");
     $('#r-instructions').text("Scan or enter the family tag");
     
     $.mobile.changePage("#register");
-    console.log("Choose sign-in/out Page");
 }
 
 function parentManual(e)
 {
     if (e.keyCode==13) {
         familyId = $('#family_id').val();
-        console.log("Family ID ", familyId);
         getFamily(familyId);
     }
 }
@@ -237,6 +230,9 @@ function getFamily(tag)
                 $('#r-family').text(data.parent_name);      
                 $('#r-status').attr('src',FAMILYIN);
                 $('#r-instructions').text("Scan the children's tags and touch 'register' to finish");
+                children = data.children;
+                signedin = data.signed_in;
+                signedout = data.signed_out;
                 var html = registered(data.children, data.signed_in, data.signed_out)
                 var list = $('#r-list');
                 list.empty();
@@ -246,7 +242,6 @@ function getFamily(tag)
             $.mobile.loading("hide");
         },
         error: function(error) {
-            console.log("---failure");
             $('#r-errors').text(error);
             $('#r-status').attr('src',FAMILYERROR);
             $.mobile.loading("hide");
@@ -258,13 +253,13 @@ function getFamily(tag)
 function registered(children, signedin, signedout)
 {
     var html = '<li data-role="list-divider">Children</li>';
-    if ((signedin.length==0) && (signedout.length==0))
+    if ((signedin.length==0))
     {
         // Use the children list as no one is registered
-        html += _reg_list(children, false); 
+        html += _reg_list(children, false);
     } else {
         html += _reg_list(signedin, true);
-        html += _reg_list(signedout, false);        
+        //html += _reg_list(signedout, false);        
     }
     
     return html;
@@ -275,21 +270,56 @@ function _reg_list(list, status)
     var html = "";
     var checked = "";
     if (status) {
-        checked = ' data-icon="checkbox-on"';
+        //checked = ' data-icon="checkbox-on"';
     } else {
-        checked = ' data-icon="checkbox-off"';    
+        //checked = ' data-icon="checkbox-off"';    
     }
     
     for (i in list)
     {
         k = list[i];
         var name = ' name="k-' + $.trim(k.personid) + '" ';
-        var id = ' id="k-' + $.trim(k.personid) + '" ';
-        item = '<li'+ checked + '><a href="#"' + name + id + '>'+ k.name +'</a></li>';
+        var id = ' id="k-' + $.trim(k.tagnumber) + '" ';
+        item = '<li'+ checked + '><a href="#"' + name + id + ' onclick="onChildClicked(this)">'+ k.name +'</a></li>';
         html += item;
     }
     return html;
 }
 
+function onChildClicked(el)
+{
+    // Add the child to the sign-in list (if not already there)
+    var found = false;
+    for (i in signedin) {
+        e = signedin[i];
+        if (el.id == 'k-' + e.tagnumber) {
+            found = true;
+        }
+    }
+    
+    if (!found) {
+        signedin.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).html()});
+        var item = '<li><a href="#" name="' + el.name + '-in" id="' + el.id + '-in"' + '>'+ $(el).html() +'</a></li>';
+        $('#r-list-in').append(item);
+        $('#r-list-in').listview("refresh"); 
+    }
+}
+
+function onChildScanned(tag)
+{
+
+}
+
+function childTagNumber(tagnumber, action)
+{
+    // Check if the tag number is for a child
+    
+        // +Get the child's details from the family list and add to sign-in list
+        
+        // -Get the child's details from CRM and add to sign-in list (highlighted)
+        
+        
+
+}
 
 
