@@ -68,17 +68,20 @@ $(document).on("pageinit", function(event, ui) {
  * General initialization.
  */
 $.when(jqmReady, pgReady).then(function() {
-   //Initialization code here
-   if(app.callback) {
+    //Initialization code here
+    if(app.callback) {
       app.callback();
-   }
+    }
    
-   // FastClick handler
-   window.addEventListener('load', function() {
+    // FastClick handler
+    window.addEventListener('load', function() {
         FastClick.attach(document.body);
     }, false);
     
-   console.log("Frameworks ready.");
+    // NFC Handler
+    nfc.addNdefListener(nfcCallback, function() {console.log("NFC listener successful");}, function() {console.log("NFC listener failed");});
+
+    console.log("Frameworks ready.");
 });
 
 
@@ -204,6 +207,12 @@ function parentManual(e)
         getFamily(familyId);
     }
 }
+
+function nfcCallback(nfcEvent)
+{
+    console.log("NFC Event", nfcEvent);
+}
+
 
 function getFamily(tag)
 {
