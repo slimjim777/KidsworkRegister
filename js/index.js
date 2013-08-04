@@ -79,7 +79,8 @@ $.when(jqmReady, pgReady).then(function() {
     }, false);
     
     // NFC Handler
-    nfc.addNdefListener(nfcCallback, function() {console.log("NFC listener successful");}, function() {console.log("NFC listener failed");});
+    nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+    nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
 
     console.log("Frameworks ready.");
 });
@@ -208,9 +209,33 @@ function parentManual(e)
     }
 }
 
+function nfcNdef(nfcEvent)
+{
+    console.log("NFC NDEF");
+    alert(nfcEvent.tag);
+    
+    console.log(JSON.stringify(nfcEvent.tag));
+    var tag = nfcEvent.tag;
+
+    // BB7 has different names, copy to Android names
+    if (tag.serialNumber) {
+        tag.id = tag.serialNumber;
+        tag.isWritable = !tag.isLocked;
+        tag.canMakeReadOnly = tag.isLockable;
+    } 
+    
+    $('#family_id').value(tag.id);
+}
+
+
 function nfcCallback(nfcEvent)
 {
-    console.log("NFC Event", nfcEvent);
+    var tag = nfcEvent.tag;
+    console.log("NFC Tag Discovered");
+    console.log(JSON.stringify(nfcEvent.tag));
+    alert(nfcEvent.tag);
+    
+    $('#family_id').value(nfcEvent.tag);
 }
 
 
