@@ -39,12 +39,12 @@ var app = {
       if(browser) {
          console.log("Is web.");
          //In case of web we ignore PG but resolve the Deferred Object to trigger initialization
-	 pgReady.resolve();
+	     pgReady.resolve();
       }
       else {
          console.log("Is not web.");
 	 this.bindEvents();
-      }
+     }
    },
    bindEvents: function() {
       document.addEventListener('deviceready', this.onDeviceReady, false);
@@ -63,6 +63,19 @@ var app = {
 };
 $(document).on("pageinit", function(event, ui) {
    jqmReady.resolve();
+   
+    // FastClick handler
+    window.addEventListener('load', function() {
+        FastClick.attach(document.body);
+    }, false);
+    
+    if ('nfc' in window) {
+        // NFC Handler
+        nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+        nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+    } else {
+        alert("NFC not found");
+    }
 });
 /**
  * General initialization.
@@ -72,16 +85,7 @@ $.when(jqmReady, pgReady).then(function() {
     if(app.callback) {
       app.callback();
     }
-   
-    // FastClick handler
-    window.addEventListener('load', function() {
-        FastClick.attach(document.body);
-    }, false);
     
-    // NFC Handler
-    nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
-    nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
-
     console.log("Frameworks ready.");
 });
 
@@ -224,7 +228,7 @@ function nfcNdef(nfcEvent)
         tag.canMakeReadOnly = tag.isLockable;
     } 
     
-    $('#family_id').value(tag.id);
+    $('#family_id').val(tag.id);
 }
 
 
@@ -235,7 +239,7 @@ function nfcCallback(nfcEvent)
     console.log(JSON.stringify(nfcEvent.tag));
     alert(nfcEvent.tag);
     
-    $('#family_id').value(nfcEvent.tag);
+    $('#family_id').val(nfcEvent.tag);
 }
 
 
