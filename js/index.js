@@ -39,11 +39,11 @@ var app = {
       if(browser) {
          console.log("Is web.");
          //In case of web we ignore PG but resolve the Deferred Object to trigger initialization
-	     pgReady.resolve();
+         pgReady.resolve();
       }
       else {
          console.log("Is not web.");
-	 this.bindEvents();
+     this.bindEvents();
      }
    },
    bindEvents: function() {
@@ -62,8 +62,8 @@ var app = {
    receivedEvent: function(event) {
       switch(event) {
          case 'deviceready':
-	    pgReady.resolve();
-	    break;
+        pgReady.resolve();
+        break;
       }
    }
 };
@@ -130,8 +130,8 @@ function login()
         },
         error: function(error) {
             console.log(error);
-    	    $("#loginmessage").text("Login failed. Please check the credentials.");
-    	    $.mobile.changePage( "#login");
+            $("#loginmessage").text("Login failed. Please check the credentials.");
+            $.mobile.changePage( "#login");
         }
     });
     
