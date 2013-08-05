@@ -157,7 +157,7 @@ function eventsPage(event, data)
         dataType: "json",
         data: null,
         success: function(data) {
-            for (ev in data.result)
+            for (var ev in data.result)
             {
                 var e = data.result[ev];
                 items.push('<li id="event' + e.event_id + '"><a href="#actions" onclick="actionsPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
@@ -195,7 +195,7 @@ function registerPage(action)
     familyId = null;
     children = [];
     signedin = [];
-    signedout = []
+    signedout = [];
     $('#r-list').hide();
     $('#family_id').val("");
     $('#r-family').text("");
@@ -270,7 +270,7 @@ function getFamily(tag)
                 children = data.children;
                 signedin = data.signed_in;
                 signedout = data.signed_out;
-                var html = registered(data.children, data.signed_in, data.signed_out)
+                var html = registered(data.children, data.signed_in, data.signed_out);
                 var list = $('#r-list');
                 list.empty();
                 list.append(html).listview('refresh');
@@ -290,7 +290,7 @@ function getFamily(tag)
 function registered(children, signedin, signedout)
 {
     var html = '<li data-role="list-divider">Children</li>';
-    if ((signedin.length==0))
+    if ((signedin.length === 0))
     {
         // Use the children list as no one is registered
         html += _reg_list(children, false);
@@ -312,7 +312,7 @@ function _reg_list(list, status)
         //checked = ' data-icon="checkbox-off"';    
     }
     
-    for (i in list)
+    for (var i in list)
     {
         k = list[i];
         var name = ' name="k-' + $.trim(k.personid) + '" ';
@@ -327,7 +327,7 @@ function onChildClicked(el)
 {
     // Add the child to the sign-in list (if not already there)
     var found = false;
-    for (i in signedin) {
+    for (var i in signedin) {
         e = signedin[i];
         if (el.id == 'k-' + e.tagnumber) {
             found = true;
