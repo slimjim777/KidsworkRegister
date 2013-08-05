@@ -50,8 +50,14 @@ var app = {
       document.addEventListener('deviceready', this.onDeviceReady, false);
    },
    onDeviceReady: function() {
-      // The scope of 'this' is the event, hence we need to use app.
-      app.receivedEvent('deviceready');
+       // The scope of 'this' is the event, hence we need to use app.
+       console.log('deviceready');
+       if (nfc) {
+           // NFC Handler
+           nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+           nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+       }
+
    },
    receivedEvent: function(event) {
       switch(event) {
@@ -69,13 +75,6 @@ $(document).on("pageinit", function(event, ui) {
         FastClick.attach(document.body);
     }, false);
     
-    if ('nfc' in window) {
-        // NFC Handler
-        nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
-        nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
-    } else {
-        alert("NFC not found");
-    }
 });
 /**
  * General initialization.
