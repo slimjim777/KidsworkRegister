@@ -77,8 +77,8 @@ $( document ).bind( "mobileinit", function() {
         <div data-role="footer" data-theme="c" data-position="fixed">
             <div data-role="navbar" data-iconpos="top">
                 <ul>
-                    <li><a href="#" data-icon="plus" onclick="registerPage('Sign-In')">Sign-In</a></li>
-                    <li><a href="#" data-icon="minus" onclick="registerPage('Sign-Out')">Sign-Out</a></li>
+                    <li><a href="#" data-icon="plus" onclick="familyPage('Sign-In')">Sign-In</a></li>
+                    <li><a href="#" data-icon="minus" onclick="familyPage('Sign-Out')">Sign-Out</a></li>
                 </ul>
             </div>
         </div>    
@@ -116,41 +116,67 @@ $( document ).bind( "mobileinit", function() {
     </div>    
 
 
-<!-- Register -->
-<div data-role="page" data-title="Register" id="register">
+<!-- Scan Family -->
+<div data-role="page" data-title="Register" id="family">
     <div data-role="header" data-theme="b" data-position="fixed">
         <a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Summary</a>
+        <h1 id="f-heading">Kidswork Register</h1>
+        <h3 id="f-event"></h3>
+    </div>
+    <div data-role="content">
+        <ul data-inset="true" data-role="listview" data-divider-theme="a">
+            <li data-role="list-divider">Parent</li>
+            <li><h3 id="f-action"></h3></li>
+            <li style="background-color:#ddd; ">
+                <p id="f-instructions" style="text-align:center; font-weight:bold; color:green; padding-top:1em;text-transform:uppercase;">Select Sign-In or Sign-Out</p>
+            </li>
+            <li>
+                <span class="errors" id="f-errors"></span>
+            </li>
+            <li>
+                <h3 id="f-family"></h3>
+                <input type="search" name="f-family_id" id="f-family_id" value="" placeholder="Scan or Enter Number" onkeyup="parentManual(event)" />
+            </li>
+        </ul>
+    </div>
+    
+    <div data-role="footer" data-theme="c" data-position="fixed">
+    </div>
+</div>
+    
+<!-- Register Kids -->
+<div data-role="page" data-title="Register" id="register">
+    <script type="text/javascript">
+        $( '#register' ).on( 'pagebeforeshow',function(event,data){
+            $('#r-list').listview('refresh');
+        });
+    </script>
+    <div data-role="header" data-theme="b" data-position="fixed">
+        <a href="#family" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Parent</a>
         <h1 id="r-heading">Kidswork Register</h1>
         <h3 id="r-event"></h3>
     </div>
     
-    <h2 id="r-action"></h2>
     <div data-role="content">
+        <ul id="r-list-f"  data-inset="true" data-role="listview" data-divider-theme="a">
+            <li data-role="list-divider">Family</li>
+            <li><h3 id="r-family"></h3></li>
+        </ul>
 
-        <ul data-inset="true" data-role="listview" data-divider-theme="a">
-            <li data-role="list-divider">Parent</li>
+        <ul id="r-list" data-inset="true" data-role="listview" data-divider-theme="a">
+        </ul>
+        
+        <ul data-inset="true" data-role="listview" data-divider-theme="b">
+            <li data-role="list-divider" id="r-action"></li>
             <li style="background-color:#ddd; ">
-                    <p id="r-instructions" style="text-align:center; font-weight:bold; color:green; padding-top:1em;text-transform:uppercase;">Select Sign-In or Sign-Out</p>
+                <p id="r-instructions" style="text-align:center; font-weight:bold; color:green; padding-top:1em;text-transform:uppercase;">Select Sign-In or Sign-Out</p>
             </li>
             <li>
                 <span class="errors" id="r-errors"></span>
-                
-                <div class="ui-grid-a">
-                    <div class="ui-block-a">
-                        <h3 id="r-family"></h3>
-
-                        <input type="search" name="family_id" id="family_id" value="" placeholder="Scan or Enter Number" onkeyup="parentManual(event)" />
-                        <br />                    
-                        <ul id="r-list" data-role="listview" data-inset="true" data-dividertheme="a">
-                        </ul>            
-                    </div>
-                    <div class="ui-block-b" data-theme="a"  style="padding-10px; text-align: center;">
-                        <img id="r-status" src="img/frame.png" style="" alt="Status" />
-                    </div>
-                </div>               
-                
-            </li>
-        </ul>        
+                 <input type="search" name="r-family_id" id="r-family_id" value="" placeholder="Scan or Enter Number" onkeyup="childManual(event)" />
+                 <br />                    
+            </li>        
+        </ul>
 
         <ul id="r-list-in" data-role="listview" data-inset="true" data-dividertheme="b">
             <li id="r-kids-in" data-role="list-divider">To Sign-In</li>
@@ -159,13 +185,12 @@ $( document ).bind( "mobileinit", function() {
     </div>
     
     <div data-role="footer" data-theme="c" data-position="fixed">
-        <div data-role="controlgroup">
-            <a href="#" data-iconpos="top" data-icon="gear" data-role="button" data-theme="c">Register</a>
+        <div data-role="controlgroup" data-inset="true">
+            <a href="#" data-iconpos="top" data-icon="gear" data-role="button" data-theme="b">Register</a>
         </div>
     </div>
-
 </div>
-    
+
 
     <script type="text/javascript">
         app.initialize();

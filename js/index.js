@@ -23,7 +23,7 @@ var eventId, familyId, action, eventName, children, signedin, signedout;
 
 var FAMILYIN = "img/frame_in.png";
 var FAMILYOUT = "img/frame_out.png";
-var FAMILYBLANK = "img/frame.png";
+var FAMILYBLANK = "img/framef-.png";
 var FAMILYERROR = "img/frame_error.png";
 
 var jqmReady = $.Deferred();
@@ -164,7 +164,6 @@ function eventsPage(event, data)
             {
                 var e = data.result[ev];
                 items.push('<li id="event' + e.event_id + '"><a href="#actions" onclick="actionsPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
-                //items.push('<li id="event' + e.event_id + '"><a href="#register" onclick="registerPage(\'' + e.event_id +'\',\''+ e.name + '\')" data-transition="slide" >' + e.name + '</a></li>');
             }
             $('#e-list li').remove();
             $('#e-list').append(items.join('\n'));
@@ -178,28 +177,65 @@ function eventsPage(event, data)
 }
 
 function actionsPage(event_id, event_name) {
+    console.log("actionsPage");
+    console.log(event_id);
     eventId = event_id;
     eventName = event_name;
     
     var items = [];
     $('#a-event').text(event_name);
+    $('#r-event').text(event_name);
         
     $.mobile.changePage("#actions");
 
 }
 
-function registerPage(action)
+function familyPage(a)
 {
+    console.log("familyPage");
+    console.log(eventName);
     var items = [];
-    $('#r-event').text(eventName);
-    $('#r-action').text(action);
+    $('#f-event').text(eventName);
+    action = a;
+    $('#f-action').text(a);
+    $('#r-action').text(a);
     
     // Reset the view
     familyId = null;
     children = [];
     signedin = [];
     signedout = [];
-    $('#r-list').hide();
+    //$('#r-list').hide();
+    //var list = $('#r-list-in');
+    //list.empty();
+    //list.append('<li id="r-kids-in" data-role="list-divider">To Sign-In</li>');
+    //list.hide();
+    //list.listview("refresh");
+    $('#f-family_id').val("");
+    $('#f-family').text("");
+    $('#f-instructions').text("Scan or enter the family tag");
+    
+    $.mobile.changePage("#family");
+}
+
+function registerPage()
+{
+    console.log("registerPage");
+    var items = [];
+    $('#r-event').text(eventName);
+    $('#r-action').text(action);
+    
+    // Reset the view
+    //familyId = null;
+    children = [];
+    signedin = [];
+    signedout = [];
+    //$('#r-list').hide();
+    var list = $('#r-list-in');
+    list.empty();
+    list.append('<li id="r-kids-in" data-role="list-divider">To Sign-In</li>');
+    list.hide();
+    //list.listview("refresh");
     $('#family_id').val("");
     $('#r-family').text("");
     $('#r-instructions').text("Scan or enter the family tag");
@@ -210,7 +246,7 @@ function registerPage(action)
 function parentManual(e)
 {
     if (e.keyCode==13) {
-        familyId = $('#family_id').val();
+        familyId = $('#f-family_id').val();
         getFamily(familyId);
     }
 }
@@ -261,10 +297,9 @@ function getFamily(tag)
         data: JSON.stringify(family_data),
         success: function(data) {
             if (data.error) {
-                $('#r-errors').text(data.error);
-                $('#r-status').attr('src',FAMILYERROR);
-                $('#r-family').text("");
-                $('#r-list').hide();
+                $('#f-errors').text(data.error);
+                $('#f-status').attr('src',FAMILYERROR);
+                $('#f-family').text("");
             } else {
                 $('#r-errors').text("");
                 $('#r-family').text(data.parent_name);      
@@ -274,10 +309,12 @@ function getFamily(tag)
                 signedin = data.signed_in;
                 signedout = data.signed_out;
                 var html = registered(data.children, data.signed_in, data.signed_out);
+                console.log(html);
                 var list = $('#r-list');
                 list.empty();
-                list.append(html).listview('refresh');
-                list.show();
+                list.append(html);
+                $.mobile.loading("hide");
+                $.mobile.changePage("#register");
             }
             $.mobile.loading("hide");
         },
@@ -335,8 +372,10 @@ function onChildClicked(el)
     if (!found) {
         signedin.push ({ tagnumber: el.id.replace('k-',''), personid: el.name.replace('k-',''), name: $(el).html()});
         var item = '<li><a href="#" name="' + el.name + '-in" id="' + el.id + '-in"' + '>'+ $(el).html() +'</a></li>';
-        $('#r-list-in').append(item);
-        $('#r-list-in').listview("refresh"); 
+        var list_in = $('#r-list-in');
+        list_in.append(item);
+        list_in.listview("refresh");
+        list_in.show();
     }
 }
 
