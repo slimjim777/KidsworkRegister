@@ -61,9 +61,11 @@ var app = {
    },
    receivedEvent: function(event) {
       switch(event) {
-         case 'deviceready':
-        pgReady.resolve();
-        break;
+        case 'deviceready':
+            pgReady.resolve();
+            break;
+        default:
+            break;
       }
    }
 };
@@ -96,6 +98,7 @@ function authorization()
     {
         // Redirect to login page
         $.mobile.changePage( "#login"); //, { transition: "pop"} );
+        return false;
     }
     else
     {
@@ -115,7 +118,7 @@ function login()
     
     var login_data = {
         "username": username,
-        "password": password,
+        "password": password
     };
     
     var request = $.ajax({
@@ -246,7 +249,7 @@ function getFamily(tag)
 {
     var family_data = {
         "family_number": tag,
-        "event_id": eventId,
+        "event_id": eventId
     };
     
     $.mobile.loading("show");
@@ -306,11 +309,6 @@ function _reg_list(list, status)
 {
     var html = "";
     var checked = "";
-    if (status) {
-        //checked = ' data-icon="checkbox-on"';
-    } else {
-        //checked = ' data-icon="checkbox-off"';    
-    }
     
     for (var i in list)
     {
