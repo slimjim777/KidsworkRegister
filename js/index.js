@@ -205,12 +205,6 @@ function familyPage(a)
     children = [];
     signedin = [];
     signedout = [];
-    //$('#r-list').hide();
-    //var list = $('#r-list-in');
-    //list.empty();
-    //list.append('<li id="r-kids-in" data-role="list-divider">To Sign-In</li>');
-    //list.hide();
-    //list.listview("refresh");
     $('#f-family_id').val("");
     $('#f-family').text("");
     $('#f-instructions').text("Scan or enter the family tag");
@@ -254,7 +248,6 @@ function parentManual(e)
 function nfcNdef(nfcEvent)
 {
     console.log("NFC NDEF");
-    alert(JSON.stringify(nfcEvent.tag));
     
     console.log(JSON.stringify(nfcEvent.tag));
     var tag = nfcEvent.tag;
@@ -266,7 +259,11 @@ function nfcNdef(nfcEvent)
         tag.canMakeReadOnly = tag.isLockable;
     } 
 
-    $('#f-message').val(JSON.stringify(nfcEvent.tag));
+    alert(JSON.stringify(nfcEvent.tag));
+    $('#f-message').text(JSON.stringify(nfcEvent.tag));
+
+    alert(nfc.bytesToString(record.payload));
+    $('#f-message').text(nfc.bytesToString(record.payload));
     
     $('#family_id').val(tag.id);
 }
@@ -277,8 +274,9 @@ function nfcCallback(nfcEvent)
     var tag = nfcEvent.tag;
     console.log("NFC Tag Discovered");
     console.log(JSON.stringify(nfcEvent.tag));
-    $('#f-message').val(JSON.stringify(nfcEvent.tag));
+    $('#f-message').text(JSON.stringify(nfcEvent.tag));
     alert(JSON.stringify(nfcEvent.tag));
+    alert(nfc.bytesToString(record.payload));
     
     $('#family_id').val(nfcEvent.tag);
 }
