@@ -254,7 +254,7 @@ function parentManual(e)
 function nfcNdef(nfcEvent)
 {
     console.log("NFC NDEF");
-    alert(nfcEvent.tag);
+    alert(JSON.stringify(nfcEvent.tag));
     
     console.log(JSON.stringify(nfcEvent.tag));
     var tag = nfcEvent.tag;
@@ -265,6 +265,8 @@ function nfcNdef(nfcEvent)
         tag.isWritable = !tag.isLocked;
         tag.canMakeReadOnly = tag.isLockable;
     } 
+
+    $('#f-message').val(JSON.stringify(nfcEvent.tag));
     
     $('#family_id').val(tag.id);
 }
@@ -275,7 +277,8 @@ function nfcCallback(nfcEvent)
     var tag = nfcEvent.tag;
     console.log("NFC Tag Discovered");
     console.log(JSON.stringify(nfcEvent.tag));
-    alert(nfcEvent.tag);
+    $('#f-message').val(JSON.stringify(nfcEvent.tag));
+    alert(JSON.stringify(nfcEvent.tag));
     
     $('#family_id').val(nfcEvent.tag);
 }
