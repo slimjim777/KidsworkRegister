@@ -52,11 +52,6 @@ var app = {
    onDeviceReady: function() {
        // The scope of 'this' is the event, hence we need to use app.
        console.log('deviceready');
-       if (nfc) {
-           // NFC Handler
-           nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
-           nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
-       }
 
    },
    receivedEvent: function(event) {
@@ -190,6 +185,8 @@ function actionsPage(event_id, event_name) {
 
 }
 
+
+
 function familyPage(a)
 {
     console.log("familyPage");
@@ -237,12 +234,65 @@ function registerPage()
     $.mobile.changePage("#register");
 }
 
+function writeTagPage()
+{
+    $.mobile.changePage("#write_tag");
+}
+
+function writeTag()
+{
+    console.log("writeTag");
+    
+    var prefix = $("input[name=w-radio-choice]:checked").val();
+    var tagnumber = $('#w-tagnumber').val();
+    
+    if (!tagnumber) {
+        _slide_message("The 'Tag Number' must be entered", false)
+    } else {
+        _slide_message("Wrote tag '" + prefix + tagnumber + "' successfully", true)
+    }
+}
+
+function _slide_message(words, success)
+{
+    var message = $('#w-message');
+
+    if (success) {
+        message.removeClass( "message error" );
+        message.addClass( "message success" );
+    
+    } else {
+        message.removeClass( "message success" );
+        message.addClass( "message error" );    
+    }
+    
+    message.html('<h3>' + words + '</h3>').slideDown('slow').delay(1000).slideToggle('slow');
+}
+
 function parentManual(e)
 {
     if (e.keyCode==13) {
         familyId = $('#f-family_id').val();
         getFamily(familyId);
     }
+}
+
+function nfcWriteInit()
+{
+   if (nfc) {
+       // NFC Handler
+       nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+       nfc.removeNdefListener(null, null, null);
+   }
+}
+
+function nfcReadInit()
+{
+   if (nfc) {
+       // NFC Handler
+       nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+       nfc.removeTagDiscoveredListener(null, null, null);
+   }
 }
 
 function nfcNdef(nfcEvent)

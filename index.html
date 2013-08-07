@@ -79,6 +79,7 @@ $( document ).bind( "mobileinit", function() {
                 <ul>
                     <li><a href="#" data-icon="plus" onclick="familyPage('Sign-In')">Sign-In</a></li>
                     <li><a href="#" data-icon="minus" onclick="familyPage('Sign-Out')">Sign-Out</a></li>
+                    <li><a href="#" data-icon="pencil" onclick="writeTagPage()">Write Tag</a></li>
                 </ul>
             </div>
         </div>    
@@ -118,6 +119,11 @@ $( document ).bind( "mobileinit", function() {
 
 <!-- Scan Family -->
 <div data-role="page" data-title="Register" id="family">
+    <script type="text/javascript">
+        $( '#family' ).on( 'pagebeforeshow',function(event,data){
+            nfcReadInit();
+        });
+    </script>
     <div data-role="header" data-theme="b" data-position="fixed">
         <a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Summary</a>
         <h1 id="f-heading">Kidswork Register</h1>
@@ -192,6 +198,48 @@ $( document ).bind( "mobileinit", function() {
         </div>
     </div>
 </div>
+
+<!-- Write Tag -->
+<div data-role="page" data-title="Register" id="write_tag">
+    <script type="text/javascript">
+        $( '#write_tag' ).on( 'pagebeforeshow',function(event,data){
+            $('#w-message').hide();
+            nfcWriteInit();
+        });
+    </script>
+    <div data-role="header" data-theme="b" data-position="fixed">
+        <a href="#events" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Events</a>
+        <h1 id="w-heading" class="flash">Kidswork Register</h1>
+        <h3>Write Tag</h3>
+    </div>
+    <div data-role="content">
+        <div id="w-message" class="message">
+        </div>
+        <fieldset data-role="controlgroup">
+            <legend>Select the type of tag:</legend>
+                <input type="radio" name="w-radio-choice" id="w-radio-choice-1" value="F" checked="checked" />
+                <label for="w-radio-choice-1">Family</label>
+
+                <input type="radio" name="w-radio-choice" id="w-radio-choice-2" value="C"  />
+                <label for="w-radio-choice-2">Child</label>
+
+                <input type="radio" name="w-radio-choice" id="w-radio-choice-3" value="L"  />
+                <label for="w-radio-choice-3">Leader</label>
+        </fieldset>
+        
+        <div data-role="fieldcontain">
+            <label for="name">Tag Number:</label>
+            <input type="text" name="w-tagnumber" id="w-tagnumber" value=""  />
+        </div>
+        
+        <input type="submit" value="Write Tag" onclick="writeTag()" />
+    </div>
+    
+    <div data-role="footer" data-theme="c" data-position="fixed">
+    </div>
+</div>
+    
+
 
 
     <script type="text/javascript">
