@@ -251,6 +251,7 @@ function nfcNdef(nfcEvent)
     
     console.log(JSON.stringify(nfcEvent.tag));
     var tag = nfcEvent.tag;
+    var records = nfcEvent.tagData;
 
     // BB7 has different names, copy to Android names
     if (tag.serialNumber) {
@@ -262,8 +263,8 @@ function nfcNdef(nfcEvent)
     alert(JSON.stringify(nfcEvent.tag));
     $('#f-message').text(JSON.stringify(nfcEvent.tag));
 
-    alert(nfc.bytesToString(record.payload));
-    $('#f-message').text(nfc.bytesToString(record.payload));
+    alert(nfc.bytesToString(records[0].payload));
+    $('#f-message').text(nfc.bytesToString(records[0].payload));
     
     $('#family_id').val(tag.id);
 }
@@ -272,11 +273,12 @@ function nfcNdef(nfcEvent)
 function nfcCallback(nfcEvent)
 {
     var tag = nfcEvent.tag;
+    var records = nfcEvent.tagData;
     console.log("NFC Tag Discovered");
     console.log(JSON.stringify(nfcEvent.tag));
     $('#f-message').text(JSON.stringify(nfcEvent.tag));
     alert(JSON.stringify(nfcEvent.tag));
-    alert(nfc.bytesToString(record.payload));
+    alert(nfc.bytesToString(records[0].payload));
     
     $('#family_id').val(nfcEvent.tag);
 }
