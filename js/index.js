@@ -19,12 +19,14 @@
  
 var user_credentials;
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
-var eventId, familyId, action, eventName, children, signedin, signedout;
+var eventId, familyId, action, eventName, children, signedin, signedout, tagRecord;
 
 var FAMILYIN = "img/frame_in.png";
 var FAMILYOUT = "img/frame_out.png";
 var FAMILYBLANK = "img/framef-.png";
 var FAMILYERROR = "img/frame_error.png";
+
+var MIMETYPE = 'text/kidswork';
 
 var jqmReady = $.Deferred();
 var pgReady = $.Deferred();
@@ -246,11 +248,16 @@ function writeTag()
     var prefix = $("input[name=w-radio-choice]:checked").val();
     var tagnumber = $('#w-tagnumber').val();
     
+    
     if (!tagnumber) {
-        _slide_message("The 'Tag Number' must be entered", false)
-    } else {
-        _slide_message("Wrote tag '" + prefix + tagnumber + "' successfully", true)
+        _slide_message("The 'Tag Number' must be entered", false);
+        return;
     }
+    
+    // Format the record for the tag and save it, ready for writing
+    // ...the write is called when the tag-discovered event is fired
+    tagRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(prefix + tagnumber));
+
 }
 
 function _slide_message(words, success)
@@ -281,7 +288,7 @@ function nfcWriteInit()
 {
    if (nfc) {
        // NFC Handler
-       nfc.addTagDiscoveredListener(nfcCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+       nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
        nfc.removeNdefListener(null, null, null);
    }
 }
@@ -290,12 +297,12 @@ function nfcReadInit()
 {
    if (nfc) {
        // NFC Handler
-       nfc.addNdefListener(nfcNdef, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+       nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
        nfc.removeTagDiscoveredListener(null, null, null);
    }
 }
 
-function nfcNdef(nfcEvent)
+function nfcNdefCallback(nfcEvent)
 {
     console.log("NFC NDEF");
     
@@ -320,17 +327,22 @@ function nfcNdef(nfcEvent)
 }
 
 
-function nfcCallback(nfcEvent)
+function nfcTagDiscoveredCallback(nfcEvent)
 {
-    var tag = nfcEvent.tag;
-    var records = nfcEvent.tagData;
-    console.log("NFC Tag Discovered");
-    console.log(JSON.stringify(nfcEvent.tag));
-    $('#f-message').text(JSON.stringify(nfcEvent.tag));
-    alert(JSON.stringify(nfcEvent.tag));
-    alert(nfc.bytesToString(records[0].payload));
-    
-    $('#family_id').val(nfcEvent.tag);
+    $('#family_id').val("NFC Tag Discovered");
+
+    // Write the tag
+    if (tagRecord) {    
+        nfc.write(
+            [tagRecord], 
+            function() {
+                _slide_message("Wrote tag '" + prefix + tagnumber + "' successfully", true);
+            },
+            function(error) {
+                _slide_message(error, false);
+            }
+        );
+    }
 }
 
 
