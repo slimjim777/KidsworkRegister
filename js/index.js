@@ -256,11 +256,14 @@ function writeTag()
     
     // Format the record for the tag and save it, ready for writing
     // ...the write is called when the tag-discovered event is fired
-    tagRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(prefix + tagnumber));
-
+    if ('nfc' in window) {
+        tagRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(prefix + tagnumber));
+    }
+    
+    _slide_message("Scan the tag to write code '" + prefix + tagnumber + "'", true, true);
 }
 
-function _slide_message(words, success)
+function _slide_message(words, success, hold)
 {
     var message = $('#w-message');
 
@@ -273,7 +276,12 @@ function _slide_message(words, success)
         message.addClass( "message error" );    
     }
     
-    message.html('<h3>' + words + '</h3>').slideDown('slow').delay(1000).slideToggle('slow');
+    message.html('<h3>' + words + '</h3>');
+    if (!hold) {
+        message.slideDown('slow').delay(1000).slideToggle('slow');
+    } else {
+        message.slideDown('slow');
+    }
 }
 
 function parentManual(e)
@@ -286,7 +294,7 @@ function parentManual(e)
 
 function nfcWriteInit()
 {
-   if (nfc) {
+   if ('nfc' in window) {
        // NFC Handler
        nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
        nfc.removeNdefListener(null, null, null);
@@ -295,7 +303,7 @@ function nfcWriteInit()
 
 function nfcReadInit()
 {
-   if (nfc) {
+   if ('nfc' in window) {
        // NFC Handler
        nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
        nfc.removeTagDiscoveredListener(null, null, null);
@@ -329,19 +337,18 @@ function nfcNdefCallback(nfcEvent)
 
 function nfcTagDiscoveredCallback(nfcEvent)
 {
-    $('#family_id').val("NFC Tag Discovered");
-
     // Write the tag
     if (tagRecord) {    
         nfc.write(
             [tagRecord], 
             function() {
-                _slide_message("Wrote tag '" + prefix + tagnumber + "' successfully", true);
+                _slide_message("Wrote tag successfully", true);
             },
             function(error) {
                 _slide_message(error, false);
             }
         );
+        alert("NFC Tag Discovered: " + JSON.stringify(tagRecord));
     }
 }
 
