@@ -19,7 +19,7 @@
  
 var user_credentials;
 var BASE_URL = "http://192.168.1.64:5000/rest/v1.0/";
-var eventId, familyId, action, eventName, children, signedin, signedout, tagRecord;
+var eventId, familyId, action, eventName, children, signedin, signedout, tagRecord, tagPrefix, tagNumber;
 
 var FAMILYIN = "img/frame_in.png";
 var FAMILYOUT = "img/frame_out.png";
@@ -312,26 +312,35 @@ function nfcReadInit()
 
 function nfcNdefCallback(nfcEvent)
 {
-    console.log("NFC NDEF");
-    
-    console.log(JSON.stringify(nfcEvent.tag));
     var tag = nfcEvent.tag;
-    var records = nfcEvent.tagData;
-
-    // BB7 has different names, copy to Android names
-    if (tag.serialNumber) {
-        tag.id = tag.serialNumber;
-        tag.isWritable = !tag.isLocked;
-        tag.canMakeReadOnly = tag.isLockable;
-    } 
-
-    alert(JSON.stringify(nfcEvent.tag));
-    $('#f-message').text(JSON.stringify(nfcEvent.tag));
-
-    alert(nfc.bytesToString(records[0].payload));
-    $('#f-message').text(nfc.bytesToString(records[0].payload));
+    var prefix_tag = tag.ndefMessage[0].payload;
     
-    $('#family_id').val(tag.id);
+    // Analyse the prefix and tag Number
+    var groups = prefix_tag.match(/(^F)(\d+$)/);
+    if ((!groups) || (groups.length != 3)) {
+        _slide_message("The tag number is invalid: " + prefix_tag, false);
+        return; 
+    }
+    
+    // Store the tag details
+    tagPrefix = groups[1];
+    tagNumber = groups[2];
+    
+    var hash = window.location.hash;
+    if ((tagPrefix == 'F') && (hash.match(/^#family$/))) {
+        // Family tag scanned on the family page
+        $('#f-family_id').val(tagNumber);
+        getFamily(tagNumber);
+    } else if ((tagPrefix == 'C') && (hash.match(/^#register$/))) {
+        // Child tag scanned on registration page
+        onChildScanned(tagNumber);
+    } else if ((tagPrefix == 'L') && (hash.match(/^#leader$/))) {
+        // Leader tag scanned
+        _slide_message('Not implemented: ' + tagPrefix + tagNumber, false);
+    } else {
+        _slide_message('The scanned tag is incorrect for this stage: ' + tagPrefix + tagNumber, false);
+    }
+    
 }
 
 
@@ -453,7 +462,7 @@ function onChildClicked(el)
 
 function onChildScanned(tag)
 {
-
+    
 }
 
 function childTagNumber(tagnumber, action)
