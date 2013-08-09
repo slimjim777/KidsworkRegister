@@ -45,8 +45,8 @@ var app = {
    onDeviceReady: function() {
        // The scope of 'this' is the event, hence we need to use app.
        console.log('deviceready');
-       nfc.addNdefListener(nfcNdefCallback, function() {alert("NFC NDEF listener successful");}, function(error) {alert("NFC listener failed: " + JSON.stringify(error));});
-       nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {alert("NFC Tag listener successful");}, function() {alert("NFC listener failed: "+ JSON.stringify(error));});       
+       nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function(error) {alert("NFC listener failed: " + JSON.stringify(error));});
+       nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {alert("NFC listener failed: "+ JSON.stringify(error));});       
    },
    route: function() {
         console.log('route');
