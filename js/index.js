@@ -261,7 +261,6 @@ function writeTag()
     var prefix = $("input[name=w-radio-choice]:checked").val();
     var tagnumber = $('#w-tagnumber').val();
     
-    
     if (!tagnumber) {
         _slide_message("The 'Tag Number' must be entered", false);
         return;
@@ -269,9 +268,7 @@ function writeTag()
     
     // Format the record for the tag and save it, ready for writing
     // ...the write is called when the tag-discovered event is fired
-    if ('nfc' in window) {
-        tagRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(prefix + tagnumber));
-    }
+    tagRecord = ndef.mimeMediaRecord(MIMETYPE, nfc.stringToBytes(prefix + tagnumber));
     
     _slide_message("Scan the tag to write code '" + prefix + tagnumber + "'", true, true);
 }
@@ -279,6 +276,7 @@ function writeTag()
 function _slide_message(words, success, hold)
 {
     var message = $('#w-message');
+    alert(words);
 
     if (success) {
         message.removeClass( "message error" );
@@ -307,20 +305,18 @@ function parentManual(e)
 
 function nfcWriteInit()
 {
-   if ('nfc' in window) {
-       // NFC Handler
-       nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
-       nfc.removeNdefListener(null, null, null);
-   }
+    // NFC Handler
+    nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+    nfc.removeNdefListener(null, null, null);
+    alert("nfcWriteInit");
 }
 
 function nfcReadInit()
 {
-   if ('nfc' in window) {
-       // NFC Handler
-       nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
-       nfc.removeTagDiscoveredListener(null, null, null);
-   }
+    // NFC Handler
+    nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+    nfc.removeTagDiscoveredListener(null, null, null);
+    alert("nfcReadInit");
 }
 
 function nfcNdefCallback(nfcEvent)
