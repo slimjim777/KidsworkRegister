@@ -36,7 +36,6 @@ var app = {
    initialize: function() {
       this.bindEvents();
       var self = this;
-      
       self.route();
    },
    bindEvents: function() {
@@ -46,6 +45,7 @@ var app = {
    onDeviceReady: function() {
        // The scope of 'this' is the event, hence we need to use app.
        console.log('deviceready');
+       //app.route();
    },
    route: function() {
         console.log('route');
@@ -181,7 +181,8 @@ function eventsPage(event, data)
             $("#e-list").listview("refresh");        
         },
         error: function(error) {
-            console.log("---events", error);
+            console.log("---events");
+            console.log(JSON.stringify(error));
         }
     });
 
