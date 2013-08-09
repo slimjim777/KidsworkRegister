@@ -32,29 +32,43 @@ var jqmReady = $.Deferred();
 var pgReady = $.Deferred();
 
 var app = {
-   //Callback for when the app is ready
-   callback: null,
    // Application Constructor
-   initialize: function(callback) {
-      this.callback = callback;
-      var browser = document.URL.match(/^https?:/);
-      if(browser) {
-         console.log("Is web.");
-         //In case of web we ignore PG but resolve the Deferred Object to trigger initialization
-         pgReady.resolve();
-      }
-      else {
-         console.log("Is not web.");
-     this.bindEvents();
-     }
+   initialize: function() {
+      this.bindEvents();
+      var self = this;
+      
+      self.route();
    },
    bindEvents: function() {
       document.addEventListener('deviceready', this.onDeviceReady, false);
+      $(window).on('hashchange', $.proxy(this.route, this));
    },
    onDeviceReady: function() {
        // The scope of 'this' is the event, hence we need to use app.
        console.log('deviceready');
-
+   },
+   route: function() {
+        console.log('route');
+        var page;
+        var hash = window.location.hash;
+        console.log(hash);
+        if (!hash) {
+            console.log('home');
+            eventsPage();
+        } else if (hash.match(/^#events$/)) {
+            console.log('events');
+            eventsPage();
+        } else if (hash.match(/^#family$/)) {
+            console.log('family');
+            nfcReadInit();
+        } else if (hash.match(/^#register$/)) {
+            console.log('register');
+            $('#r-list').listview('refresh');
+        } else if (hash.match(/^#write_tag$/)) {
+            console.log('write_tag');
+            $('#w-message').hide();
+            nfcWriteInit();        
+        }
    },
    receivedEvent: function(event) {
       switch(event) {

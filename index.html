@@ -46,11 +46,11 @@ $( document ).bind( "mobileinit", function() {
 
     <!-- Events -->
     <div data-role="page" data-title="Register" id="events">
-        <script type="text/javascript">
+        <!--script type="text/javascript">
         $( '#events' ).on( 'pagebeforeshow',function(event,data){
             eventsPage(event,data);
         });
-        </script>
+        </script-->
         <div data-role="header" data-theme="b">
             <!--a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Actions</a-->
             <h1>Kidswork Register</h1>
@@ -119,11 +119,11 @@ $( document ).bind( "mobileinit", function() {
 
 <!-- Scan Family -->
 <div data-role="page" data-title="Register" id="family">
-    <script type="text/javascript">
+    <!--script type="text/javascript">
         $( '#family' ).on( 'pagebeforeshow',function(event,data){
             nfcReadInit();
         });
-    </script>
+    </script-->
     <div data-role="header" data-theme="b" data-position="fixed">
         <a href="#actions" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Summary</a>
         <h1 id="f-heading">Kidswork Register</h1>
@@ -154,11 +154,11 @@ $( document ).bind( "mobileinit", function() {
     
 <!-- Register Kids -->
 <div data-role="page" data-title="Register" id="register">
-    <script type="text/javascript">
+    <!--script type="text/javascript">
         $( '#register' ).on( 'pagebeforeshow',function(event,data){
             $('#r-list').listview('refresh');
         });
-    </script>
+    </script-->
     <div data-role="header" data-theme="b" data-position="fixed">
         <a href="#family" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Parent</a>
         <h1 id="r-heading">Kidswork Register</h1>
@@ -201,12 +201,12 @@ $( document ).bind( "mobileinit", function() {
 
 <!-- Write Tag -->
 <div data-role="page" data-title="Register" id="write_tag">
-    <script type="text/javascript">
+    <!--script type="text/javascript">
         $( '#write_tag' ).on( 'pagebeforeshow',function(event,data){
             $('#w-message').hide();
             nfcWriteInit();
         });
-    </script>
+    </script-->
     <div data-role="header" data-theme="b" data-position="fixed">
         <a href="#events" data-icon="arrow-l" data-direction="reverse" data-transition="slide">Events</a>
         <h1 id="w-heading" class="flash">Kidswork Register</h1>
