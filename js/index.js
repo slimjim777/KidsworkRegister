@@ -28,9 +28,6 @@ var FAMILYERROR = "img/frame_error.png";
 
 var MIMETYPE = 'text/kidswork';
 
-//var jqmReady = $.Deferred();
-//var pgReady = $.Deferred();
-
 var app = {
    // Application Constructor
    initialize: function() {
@@ -70,37 +67,16 @@ var app = {
             $('#w-message').hide();
             nfcWriteInit();        
         }
-   },
-   receivedEvent: function(event) {
-      switch(event) {
-        case 'deviceready':
-            pgReady.resolve();
-            break;
-        default:
-            break;
-      }
    }
 };
-$(document).on("pageinit", function(event, ui) {
-   jqmReady.resolve();
-   
+$(document).on("pageinit", function(event, ui) {   
     // FastClick handler
     window.addEventListener('load', function() {
         FastClick.attach(document.body);
     }, false);
     
 });
-/**
- * General initialization.
- */
-$.when(jqmReady, pgReady).then(function() {
-    //Initialization code here
-    if(app.callback) {
-      app.callback();
-    }
-    
-    console.log("Frameworks ready.");
-});
+
 
 
 // Check if the user is authorized, or redirect to login page
