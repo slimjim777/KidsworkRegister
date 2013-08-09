@@ -358,6 +358,7 @@ function nfcNdefCallback(nfcEvent)
 
 function nfcTagDiscoveredCallback(nfcEvent)
 {
+    alert("NFC Tag Discovered: " + JSON.stringify(nfcEvent) + " Hash:" + window.location.hash);
     // Write the tag
     if (tagRecord) {    
         nfc.write(
