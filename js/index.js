@@ -45,7 +45,8 @@ var app = {
    onDeviceReady: function() {
        // The scope of 'this' is the event, hence we need to use app.
        console.log('deviceready');
-       //app.route();
+       nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+       nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});       
    },
    route: function() {
         console.log('route');
@@ -306,17 +307,17 @@ function parentManual(e)
 function nfcWriteInit()
 {
     // NFC Handler
-    nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
-    nfc.removeNdefListener(null, null, null);
-    alert("nfcWriteInit");
+    //nfc.addTagDiscoveredListener(nfcTagDiscoveredCallback, function() {console.log("NFC Tag listener successful");}, function() {console.log("NFC listener failed");});
+    //nfc.removeNdefListener(null, null, null);
+    //alert("nfcWriteInit");
 }
 
 function nfcReadInit()
 {
     // NFC Handler
-    nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
-    nfc.removeTagDiscoveredListener(null, null, null);
-    alert("nfcReadInit");
+    //nfc.addNdefListener(nfcNdefCallback, function() {console.log("NFC NDEF listener successful");}, function() {console.log("NFC listener failed");});
+    //nfc.removeTagDiscoveredListener(null, null, null);
+    //alert("nfcReadInit");
 }
 
 function nfcNdefCallback(nfcEvent)
