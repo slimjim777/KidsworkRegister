@@ -187,8 +187,6 @@ function actionsPage(event_id, event_name) {
 
 }
 
-
-
 function familyPage(a)
 {
     console.log("familyPage");
@@ -318,6 +316,7 @@ function nfcNdefCallback(nfcEvent)
     // Analyse the prefix and tag Number
     var groups = prefix_tag.match(/(^F)(\d+$)/);
     if ((!groups) || (groups.length != 3)) {
+        alert("The tag number is invalid: " + prefix_tag);
         _slide_message("The tag number is invalid: " + prefix_tag, false);
         return; 
     }
@@ -325,6 +324,8 @@ function nfcNdefCallback(nfcEvent)
     // Store the tag details
     tagPrefix = groups[1];
     tagNumber = groups[2];
+    
+    alert("The tag number: " + tagPrefix + tagNumber);
     
     var hash = window.location.hash;
     if ((tagPrefix == 'F') && (hash.match(/^#family$/))) {
@@ -462,7 +463,18 @@ function onChildClicked(el)
 
 function onChildScanned(tag)
 {
-    
+    if ($('k-'+tag)) {
+        // Valid child in the family
+        onChildClicked($('k-'+tag));
+    } else {
+        // Get the child's details
+        _slide_message("The child tag 'C" + tag + " is not in this family", false);
+        
+        // Child tag that does not belong to the family
+        //var item = '<li><a href="#" name="' + el.name + '-in" id="' + el.id + '-in"' + ' data-theme="c">'+ $(el).html() +'</a></li>';
+        //var list_in = $('#r-list-in');
+        
+    }
 }
 
 function childTagNumber(tagnumber, action)
